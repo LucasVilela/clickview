@@ -1,5 +1,6 @@
 import { Button, Col, Row } from "react-bootstrap";
 import { Playlist } from "../interfaces/playlist";
+import { Link } from "react-router-dom";
 
 interface PlaylistItemProps {
   playlist: Playlist;
@@ -28,6 +29,9 @@ export function PlaylistItem(props: PlaylistItemProps) {
         <p className="mb-0">{playlist.description}</p>
       </Col>
       <Col xs="12" md="9">
+        <Link to={playlist.id.toString()}>
+          <Button variant="outline-primary">View</Button>
+        </Link>
         <Button variant="outline-danger" onClick={handleDelete}>
           Delete
         </Button>
