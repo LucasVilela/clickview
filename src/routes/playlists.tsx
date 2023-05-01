@@ -1,9 +1,9 @@
-import usePlaylists from "../hooks/use-playlists";
 import { PlaylistItem } from "../components/playlist-item";
 import { Button, Form, Spinner } from "react-bootstrap";
+import useApp from "../hooks/use-app";
 
 export function Playlists() {
-  const { playlists, deletePlaylist, addPlaylist } = usePlaylists();
+  const { playlists, addNewPlaylist, removePlaylist } = useApp();
 
   const handleNewPlaylist = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -11,13 +11,7 @@ export function Playlists() {
     const name = event.currentTarget.playlistName.value;
     const description = event.currentTarget.playlistDesc.value;
 
-    addPlaylist({
-      name,
-      description,
-      videoIds: [],
-      dateCreated: "",
-      id: Date.now()
-    });
+    addNewPlaylist(name, description);
 
     event.currentTarget.playlistName.value = "";
     event.currentTarget.playlistDesc.value = "";
@@ -34,7 +28,7 @@ export function Playlists() {
               <div>
                 <PlaylistItem
                   playlist={playlist}
-                  deletePlaylist={deletePlaylist}
+                  deletePlaylist={removePlaylist}
                 />
               </div>
             );

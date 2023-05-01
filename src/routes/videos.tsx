@@ -1,9 +1,9 @@
 import VideoItem from "../components/video-item";
 import { Container, Spinner } from "react-bootstrap";
-import useVideos from "../hooks/use-videos";
+import useApp from "../hooks/use-app";
 
 export function Videos() {
-  const videos = useVideos();
+  const { videos } = useApp();
 
   return (
     <main>

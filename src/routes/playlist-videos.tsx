@@ -1,51 +1,28 @@
 import { useParams } from "react-router-dom";
-import usePlaylists from "../hooks/use-playlists";
-import useVideos from "../hooks/use-videos";
 import VideoItem from "../components/video-item";
 import { Button, Form } from "react-bootstrap";
-import { useEffect, useMemo, useState } from "react";
-import { Video } from "../interfaces/video";
+import { useMemo } from "react";
+
+import useApp from "../hooks/use-app";
 
 export function PlaylistVideos() {
-  const [playlistVideos, setPlaylistVideos] = useState<
-    Video[] | [] | undefined
-  >(undefined);
   const params = useParams();
-  const { playlists } = usePlaylists();
-  const videos = useVideos();
+  const { videos, playlists, removeVideoFromPlaylist, addVideoToPlaylist } =
+    useApp();
 
   const currentPlaylist = playlists?.find(
     (playlist) => playlist.id === Number(params.id)
   );
+  const playlistId = currentPlaylist?.id ?? 0;
 
-  const currentVideos = videos?.filter((video) =>
-    currentPlaylist?.videoIds.includes(video.id)
-  );
+  console.log("currentPlaylist :>> ", currentPlaylist);
+  console.log("currentPlaylist :>> ", currentPlaylist?.id);
 
-  useEffect(() => {
-    if (playlistVideos === undefined) {
-      setPlaylistVideos(currentVideos);
-    }
-  }, [currentVideos, playlistVideos]);
-
-  const handleRemove = (videoId: number) => {
-    const newPlaylistVideos = playlistVideos?.filter(
-      (video) => video.id !== videoId
+  const videosOnPlaylist = useMemo(() => {
+    return videos?.filter((video) =>
+      currentPlaylist?.videoIds.includes(video.id)
     );
-    setPlaylistVideos(newPlaylistVideos);
-  };
-
-  const handleAdd = (videoId: number) => {
-    const video = videos?.find((video) => video.id === videoId);
-    const newPlaylistVideos = [...playlistVideos!, video!];
-    setPlaylistVideos(newPlaylistVideos);
-  };
-
-  const filteredVideos = useMemo(() => {
-    const currentIds = playlistVideos?.map((video) => video.id);
-
-    return videos?.filter((video) => !currentIds?.includes(video.id));
-  }, [playlistVideos, videos]);
+  }, [videos, currentPlaylist?.videoIds]);
 
   return (
     <main>
@@ -55,23 +32,27 @@ export function PlaylistVideos() {
         Add video
         <Form.Select
           aria-label="Add video"
-          onChange={(e) => handleAdd(Number(e.target.value))}
+          onChange={(e) =>
+            addVideoToPlaylist(playlistId, Number(e.target.value))
+          }
         >
           <option>Open this select menu</option>
 
-          {filteredVideos?.map((video) => {
+          {videos?.map((video) => {
             return <option value={video.id}>{video.name}</option>;
           })}
         </Form.Select>
       </div>
 
-      {playlistVideos?.map((video) => {
+      {videosOnPlaylist?.map((video) => {
         return (
           <div className="mb-3">
             <VideoItem video={video} />
             <Button
               variant="outline-danger"
-              onClick={() => handleRemove(video.id)}
+              onClick={() =>
+                removeVideoFromPlaylist(currentPlaylist?.id ?? 0, video.id)
+              }
             >
               Remove from playlist
             </Button>
