@@ -2,7 +2,19 @@ import { useState, useEffect } from "react";
 import { Playlist } from "../interfaces/playlist";
 
 const usePlaylists = () => {
-  const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
+  const [playlists, setPlaylists] = useState<Playlist[] | null | undefined>(
+    null
+  );
+
+  const deletePlaylist = (id: number) => {
+    const newPlaylists = playlists?.filter((playlist) => playlist.id !== id);
+    setPlaylists(newPlaylists);
+  };
+
+  const addPlaylist = (playlist: Playlist) => {
+    const newPlaylists = playlists?.concat(playlist);
+    setPlaylists(newPlaylists);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -21,7 +33,7 @@ const usePlaylists = () => {
     fetchData();
   }, []);
 
-  return playlists;
+  return { playlists, deletePlaylist, addPlaylist };
 };
 
 export default usePlaylists;

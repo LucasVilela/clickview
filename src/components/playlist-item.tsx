@@ -1,17 +1,22 @@
-import { Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { Playlist } from "../interfaces/playlist";
 
 interface PlaylistItemProps {
   playlist: Playlist;
+  deletePlaylist: (playlistId: number) => void;
 }
 
 export function PlaylistItem(props: PlaylistItemProps) {
-  const { playlist } = props;
+  const { playlist, deletePlaylist } = props;
 
   const videoCount =
     playlist.videoIds.length === 1
       ? "1 video"
       : `${playlist.videoIds.length} videos`;
+
+  const handleDelete = async () => {
+    await deletePlaylist(playlist.id);
+  };
 
   return (
     <Row className="border rounded p-2 mb-2">
@@ -21,6 +26,11 @@ export function PlaylistItem(props: PlaylistItemProps) {
       </Col>
       <Col xs="12" md="9">
         <p className="mb-0">{playlist.description}</p>
+      </Col>
+      <Col xs="12" md="9">
+        <Button variant="outline-danger" onClick={handleDelete}>
+          Delete
+        </Button>
       </Col>
     </Row>
   );

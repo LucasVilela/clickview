@@ -1,5 +1,5 @@
 import VideoItem from "../components/video-item";
-import { Container } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import useVideos from "../hooks/use-videos";
 
 export function Videos() {
@@ -14,7 +14,9 @@ export function Videos() {
           })}
         </Container>
       ) : (
-        <p>Loading...</p>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
       )}
     </main>
   );
